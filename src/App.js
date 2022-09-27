@@ -1,12 +1,14 @@
 import React,{useEffect, useState} from "react";
-
+import DatePicker from "react-datepicker";
 import {Button,Container,TextField,Snackbar} from '@mui/material';
 import { items } from "./csvjson";
 import {formatDate} from './helpers/format'
 import { LoadingButton } from '@mui/lab';
 import { useSearchParams } from "react-router-dom";
+import { towns } from "./towns";
 import Scanner from "./Scanner";
-
+import "react-datepicker/dist/react-datepicker.css";
+import { dataLookUp } from "./data";
 function App() {
   const [data, setData] = React.useState("Not Found");
   const [torchOn, setTorchOn] = React.useState(false);
@@ -17,23 +19,30 @@ function App() {
     UserId:20,
     ModelNo: "",
     SerialNo: "",
-    DateOfPurchase: formatDate() ,
+    DateOfPurchase: '' ,
     DateOfRegistration: formatDate(),
-    
+    PurchaseDate:'',
+    PurchaseTown:'',
+    PurchasedFrom:"",
+    WarrantyPeriod:"",
+    ProductName:""
   })
-  const scannerElement = document.getElementById('scanner');
-  const parentElement = document.getElementById('parent');
-//  useEffect(()=>{
-//   const [searchParams] = useSearchParams();
-//   setNewWarrantyReg({...newWarrantyReg,userId:searchParams?.userId})
-//  },[])
+  const purchaseWays = ['Mika Website', 'Mika Showroom', 'Supermarket','Shop','Other']
+
   const getBarcode = async (code) =>{
-   const item = items.filter((item)=>{
+   items.filter((item)=>{
     if (item.Barcode === code){
-      return item.ModelNo;
+      dataLookUp.filter((data)=>{
+        if(item.ModelNo === data.ModelNo){
+          console.log(data)
+          setNewWarrantyReg({...newWarrantyReg,ProductName:data.ItemName,WarrantyPeriod:data.WarrantyType,ModelNo:item.ModelNo})
+        }
+        return false;
+      })
+     
     }
   return false})
-    setNewWarrantyReg({...newWarrantyReg,ModelNo:item[0]?.ModelNo})
+    // setNewWarrantyReg({...newWarrantyReg,ModelNo:item[0]?.ModelNo})
     
   }
   const handleBarCodeScanned = (data) => {
@@ -64,7 +73,7 @@ function App() {
     });
     let json = await response.json();
       console.log(json);
-      if (json.status != false) {
+      if (json.status !== false) {
         setIsLoading(false);
         setOpen(true);
         setTimeout(()=>{setOpen(false)}, 3000)
@@ -80,19 +89,28 @@ function App() {
   return (
     <div >
       <Container>
-        <div style={{width:'300px'}}>
+        <div style={{marginLeft:'10px', width:'300px'}}>
         <Scanner parentCallback={handleBarCodeScanned} id='scanner'/>
+        <select style={styles.selections} onSelect={(e)=>setNewWarrantyReg({...newWarrantyReg,PurchasedFrom:e.target.value})}>
+        <option value="">-- Purchased from -- </option>
+                    {purchaseWays.map((s, i) => <option key={i} value={s}>{s}</option>)}
+        </select><br/>
+        <select style={styles.selections} onSelect={(e)=>setNewWarrantyReg({...newWarrantyReg,PurchaseTown:e.target.value})}>
+        <option value="">-- Select Town of purchase -- </option>
+                    {towns.map((s, i) => <option key={i} value={s}>{s}</option>)}
+        </select><br/>
         </div>
-        {/* <TextField style={styles.inputs} id="filled-basic" label="customer Id" variant="outlined" value={newWarrantyReg.UserId}/><br/>
-         */}
-         <TextField style={styles.inputs} id="filled-basic" label="Purchase from" variant="outlined" value={newWarrantyReg.purchased_from}/><br/>
+        
          <TextField style={styles.inputs} id="filled-basic" label="Town of Purchase" variant="outlined" value={newWarrantyReg.TownPurchase}/><br/>
         <TextField style={styles.inputs} id="filled-basic" label="Model Number" variant="outlined" value={newWarrantyReg.ModelNo}/><br/>
         <TextField style={styles.inputs} id="filled-basic" label="Serial Number" variant="outlined" value={newWarrantyReg.SerialNo} /><br/>
-        <TextField style={styles.inputs} id="filled-basic" label="Date of Purchase" variant="outlined" value={newWarrantyReg.DateOfPurchase}/><br/>
-        <div style={styles.inputs} >Warranty period : </div>
+        <TextField style={styles.inputs} id="filled-basic" label="ProductName" variant="outlined" value={newWarrantyReg.ProductName} /><br/>
+        <div style={styles.inputs}>
+          <DatePicker style={{marginLeft:'5px', border:'none'}} selected={newWarrantyReg.DateOfPurchase} onChange={(date)=>setNewWarrantyReg({...newWarrantyReg,DateOfPurchase:date})}/>
+        </div>
+        <TextField style={styles.inputs} id="filled-basic" label="Warranty Period" variant="outlined" value={newWarrantyReg.WarrantyPeriod} /><br/>
         <LoadingButton loading={isLoading} style={styles.inputs} variant="contained" onClick={()=> handleWarrantyReg()}>Register Warranty</LoadingButton><br/>
-        <a style={styles.inputs} href="https://mikaappliances.com/terms-conditions/" target="_blank" rel="noreferrer"> Terms & Conditions</a>
+        <a style={styles.inputs} href="https://mikaappliances.com/warranty-terms-conditions/" target="_blank" rel="noreferrer"> Terms & Conditions</a>
         <Snackbar
           open={open}
           autoHideDuration={6000}
@@ -107,5 +125,12 @@ export default App;
 const styles = {
   inputs:{
     margin:'10px'
+  },
+  selections:{
+    border:'none',
+    height:'40px',
+    margin:'10px',
+    width: '220px'
+    
   }
 }
