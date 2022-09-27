@@ -83,11 +83,16 @@ function App() {
         <div style={{width:'300px'}}>
         <Scanner parentCallback={handleBarCodeScanned} id='scanner'/>
         </div>
-        <TextField style={styles.inputs} id="filled-basic" label="customer Id" variant="outlined" value={newWarrantyReg.UserId}/><br/>
+        {/* <TextField style={styles.inputs} id="filled-basic" label="customer Id" variant="outlined" value={newWarrantyReg.UserId}/><br/>
+         */}
+         <TextField style={styles.inputs} id="filled-basic" label="Purchase from" variant="outlined" value={newWarrantyReg.purchased_from}/><br/>
+         <TextField style={styles.inputs} id="filled-basic" label="Town of Purchase" variant="outlined" value={newWarrantyReg.TownPurchase}/><br/>
         <TextField style={styles.inputs} id="filled-basic" label="Model Number" variant="outlined" value={newWarrantyReg.ModelNo}/><br/>
         <TextField style={styles.inputs} id="filled-basic" label="Serial Number" variant="outlined" value={newWarrantyReg.SerialNo} /><br/>
         <TextField style={styles.inputs} id="filled-basic" label="Date of Purchase" variant="outlined" value={newWarrantyReg.DateOfPurchase}/><br/>
+        <div style={styles.inputs} >Warranty period : </div>
         <LoadingButton loading={isLoading} style={styles.inputs} variant="contained" onClick={()=> handleWarrantyReg()}>Register Warranty</LoadingButton><br/>
+        <a style={styles.inputs} href="https://mikaappliances.com/terms-conditions/" target="_blank" rel="noreferrer"> Terms & Conditions</a>
         <Snackbar
           open={open}
           autoHideDuration={6000}
