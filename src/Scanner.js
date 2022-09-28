@@ -12,7 +12,7 @@ class Scanner extends React.Component {
     
     render() {
         return (<div >
-            <h1>Scan Barcode or QR code</h1>
+            <h2>Scan Barcode or QR code</h2>
             <Html5QrcodePlugin 
                 fps={10}
                 qrbox={250}
@@ -32,7 +32,7 @@ class Scanner extends React.Component {
           });
           Html5QrcodeScanner.clear();
           Html5Qrcode.cameraStatus = false;
-          alert('Scan successfull, stop scanning and close scanner')
+          
     }
   }
   export default Scanner;

@@ -43,12 +43,18 @@ class Html5QrcodePlugin extends React.Component {
         var verbose = this.props.verbose === true;
 
         // Success callback is required.
-        if (!(this.props.qrCodeSuccessCallback )) {
-            throw "qrCodeSuccessCallback is required callback.";
+        if (!(this.props.qrCodeSuccessCallback)) {
+            // throw "qrCodeSuccessCallback is required callback.";
+            this.html5QrcodeScanner.stop().then((ignore) => {
+                // QR Code scanning is stopped.
+              }).catch((err) => {
+                // Stop failed, handle it.
+              });
         }
         // if(this.child=0){}
         this.html5QrcodeScanner = new Html5QrcodeScanner(
-            qrcodeRegionId, config, verbose);
+            qrcodeRegionId, config, verbose,{rememberLastUsedCamera: false
+        });
         this.html5QrcodeScanner.render(
             this.props.qrCodeSuccessCallback,
             this.props.qrCodeErrorCallback);}

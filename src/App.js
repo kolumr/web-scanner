@@ -1,14 +1,15 @@
-import React,{useEffect, useState} from "react";
-import DatePicker from "react-datepicker";
-import {Button,Container,TextField,Snackbar} from '@mui/material';
+import React,{ useState} from "react";
+import {Container,TextField,Snackbar, Button} from '@mui/material';
 import { items } from "./csvjson";
 import {formatDate} from './helpers/format'
 import { LoadingButton } from '@mui/lab';
-import { useSearchParams } from "react-router-dom";
 import { towns } from "./towns";
 import Scanner from "./Scanner";
-import "react-datepicker/dist/react-datepicker.css";
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { dataLookUp } from "./data";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
 function App() {
   const [data, setData] = React.useState("Not Found");
   const [torchOn, setTorchOn] = React.useState(false);
@@ -28,22 +29,38 @@ function App() {
     ProductName:""
   })
   const purchaseWays = ['Mika Website', 'Mika Showroom', 'Supermarket','Shop','Other']
-
+const handleReset = () => {
+  setNewWarrantyReg({
+    UserId:20,
+    ModelNo: "",
+    SerialNo: "",
+    DateOfPurchase: '' ,
+    DateOfRegistration: formatDate(),
+    PurchaseDate:'',
+    PurchaseTown:'',
+    PurchasedFrom:"",
+    WarrantyPeriod:"",
+    ProductName:""
+  })
+}
   const getBarcode = async (code) =>{
    items.filter((item)=>{
     if (item.Barcode === code){
-      dataLookUp.filter((data)=>{
-        if(item.ModelNo === data.ModelNo){
-          console.log(data)
-          setNewWarrantyReg({...newWarrantyReg,ProductName:data.ItemName,WarrantyPeriod:data.WarrantyType,ModelNo:item.ModelNo})
-        }
-        return false;
-      })
+      getProductDetails(item)
      
     }
   return false})
     // setNewWarrantyReg({...newWarrantyReg,ModelNo:item[0]?.ModelNo})
     
+  }
+  const getProductDetails= (item)=>{
+    dataLookUp.filter((data)=>{
+      if(item.ModelNo === data.ModelNo){
+        console.log(data)
+        setNewWarrantyReg({...newWarrantyReg,ProductName:data.ItemName,WarrantyPeriod:data.WarrantyType,ModelNo:item.ModelNo})
+      }
+      return false;
+    })
   }
   const handleBarCodeScanned = (data) => {
     alert('Scanning successful, stop scanning')
@@ -53,7 +70,15 @@ function App() {
     }else{
       const data1= data.split(";")
       setNewWarrantyReg({...newWarrantyReg,ModelNo:data1[0],
-      SerialNo:data1[1]})
+        SerialNo:data1[1]})
+      dataLookUp.filter((data)=>{
+        if(data1[0] === data.ModelNo){
+          console.log('found')
+          return setNewWarrantyReg({...newWarrantyReg,ModelNo:data1[0],
+            SerialNo:data1[1],ProductName:data.ItemName,WarrantyPeriod:data.WarrantyType})
+        }
+      })
+      
       
       }
   };
@@ -88,29 +113,41 @@ function App() {
   }
   return (
     <div >
-      <Container>
-        <div style={{marginLeft:'10px', width:'300px'}}>
+      <Container maxWidth="sm">
+        <div style={{marginLeft:'10px', width:'300px',marginBottom:"10px"}}>
         <Scanner parentCallback={handleBarCodeScanned} id='scanner'/>
+        </div>
         <select style={styles.selections} onSelect={(e)=>setNewWarrantyReg({...newWarrantyReg,PurchasedFrom:e.target.value})}>
         <option value="">-- Purchased from -- </option>
-                    {purchaseWays.map((s, i) => <option key={i} value={s}>{s}</option>)}
+                    {purchaseWays.map((s, i) => <option key={i} value={s} >{s}</option>)}
         </select><br/>
         <select style={styles.selections} onSelect={(e)=>setNewWarrantyReg({...newWarrantyReg,PurchaseTown:e.target.value})}>
         <option value="">-- Select Town of purchase -- </option>
                     {towns.map((s, i) => <option key={i} value={s}>{s}</option>)}
         </select><br/>
-        </div>
         
-         <TextField style={styles.inputs} id="filled-basic" label="Town of Purchase" variant="outlined" value={newWarrantyReg.TownPurchase}/><br/>
-        <TextField style={styles.inputs} id="filled-basic" label="Model Number" variant="outlined" value={newWarrantyReg.ModelNo}/><br/>
+        <TextField style={styles.inputs} id="filled-basic" label="Model Number" variant="outlined" value={newWarrantyReg.ModelNo}/> <br/>
+        {/* <Button style={styles.inputs} variant="contained">Scan</Button> <br/> */}
         <TextField style={styles.inputs} id="filled-basic" label="Serial Number" variant="outlined" value={newWarrantyReg.SerialNo} /><br/>
+         {/* <Button style={styles.inputs} variant="contained">Scan</Button><br/> */}
         <TextField style={styles.inputs} id="filled-basic" label="ProductName" variant="outlined" value={newWarrantyReg.ProductName} /><br/>
         <div style={styles.inputs}>
-          <DatePicker style={{marginLeft:'5px', border:'none'}} selected={newWarrantyReg.DateOfPurchase} onChange={(date)=>setNewWarrantyReg({...newWarrantyReg,DateOfPurchase:date})}/>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <MobileDatePicker
+              label="Date of Purchase"
+              inputFormat="MM/DD/YYYY"
+              value={newWarrantyReg.DateOfPurchase}
+              onChange={(date)=>setNewWarrantyReg({...newWarrantyReg,DateOfPurchase:date})}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider> 
         </div>
-        <TextField style={styles.inputs} id="filled-basic" label="Warranty Period" variant="outlined" value={newWarrantyReg.WarrantyPeriod} /><br/>
-        <LoadingButton loading={isLoading} style={styles.inputs} variant="contained" onClick={()=> handleWarrantyReg()}>Register Warranty</LoadingButton><br/>
-        <a style={styles.inputs} href="https://mikaappliances.com/warranty-terms-conditions/" target="_blank" rel="noreferrer"> Terms & Conditions</a>
+        {newWarrantyReg.WarrantyPeriod? <TextField disabled='true' style={styles.inputs} id="filled-basic" label="Warranty Period" variant="outlined" value={newWarrantyReg.WarrantyPeriod} />: <div></div>}
+        <br/>
+        <LoadingButton loading={isLoading} style={styles.inputs} variant="contained" onClick={()=> handleWarrantyReg()}>Register Warranty</LoadingButton> <Button variant="outlined" onClick={handleReset}>Reset</Button><br/>
+        <div style={styles.inputs}>
+          <a  href="https://mikaappliances.com/warranty-terms-conditions/"> Terms & Conditions</a>
+        </div>
         <Snackbar
           open={open}
           autoHideDuration={6000}

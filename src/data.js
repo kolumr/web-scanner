@@ -1,4 +1,9 @@
 export const dataLookUp = [
+  {
+    "ItemName": "Air Conditioner Brackets, Powder Coated",
+    "ModelNo": "MHH1299B",
+    "WarrantyType": "5 years"
+  },
     {
       "ItemName": "Air Conditioner Brackets, Powder Coated",
       "ModelNo": "MAB1218",
