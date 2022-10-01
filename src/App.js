@@ -11,10 +11,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 function App() {
-  const [data, setData] = React.useState("Not Found");
-  const [torchOn, setTorchOn] = React.useState(false);
   const [open, setOpen] =useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isModelScanner, setisModelScanner] = React.useState(true);
   const [isBarCodeVisible, setIsBarCodeVisible] = React.useState(false);
   const [newWarrantyReg, setNewWarrantyReg] = useState({
     UserId:20,
@@ -69,6 +68,7 @@ const handleReset = () => {
       
     }else{
       const data1= data.split(";")
+      if(isModelScanner){}
       setNewWarrantyReg({...newWarrantyReg,ModelNo:data1[0],
         SerialNo:data1[1]})
       dataLookUp.filter((data)=>{
@@ -114,9 +114,11 @@ const handleReset = () => {
   return (
     <div >
       <Container maxWidth="sm">
+        <h1> Welcome to the scanner app</h1>
+        {isBarCodeVisible? 
         <div style={{marginLeft:'10px', width:'300px',marginBottom:"10px"}}>
         <Scanner parentCallback={handleBarCodeScanned} id='scanner'/>
-        </div>
+        </div> : <div></div> }
         <select style={styles.selections} onSelect={(e)=>setNewWarrantyReg({...newWarrantyReg,PurchasedFrom:e.target.value})}>
         <option value="">-- Purchased from -- </option>
                     {purchaseWays.map((s, i) => <option key={i} value={s} >{s}</option>)}
@@ -127,9 +129,9 @@ const handleReset = () => {
         </select><br/>
         
         <TextField style={styles.inputs} id="filled-basic" label="Model Number" variant="outlined" value={newWarrantyReg.ModelNo}/> <br/>
-        {/* <Button style={styles.inputs} variant="contained">Scan</Button> <br/> */}
+        <Button style={styles.inputs} variant="contained" onClick={()=> setIsBarCodeVisible(!isBarCodeVisible)}>{isBarCodeVisible & isModelScanner? 'Close Scanner': 'Scan Model Number'}</Button> <br/>
         <TextField style={styles.inputs} id="filled-basic" label="Serial Number" variant="outlined" value={newWarrantyReg.SerialNo} /><br/>
-         {/* <Button style={styles.inputs} variant="contained">Scan</Button><br/> */}
+         <Button style={styles.inputs} variant="contained" onClick={()=>{ setIsBarCodeVisible(!isBarCodeVisible); setisModelScanner(!isModelScanner)}}>{isBarCodeVisible & !isModelScanner? 'Close Scanner': 'Scan Serial Number'}</Button> <br/>
         <TextField style={styles.inputs} id="filled-basic" label="ProductName" variant="outlined" value={newWarrantyReg.ProductName} /><br/>
         <div style={styles.inputs}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
