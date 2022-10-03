@@ -43,15 +43,22 @@ const handleReset = () => {
   })
 }
   const getBarcode = async (code) =>{
-   items.filter((item)=>{
-    if (item.Barcode === code){
-      getProductDetails(item)
-     
+    console.log("getBarcode")
+    if(isModelScanner === false){
+      console.log("Serial")
+      setNewWarrantyReg({...newWarrantyReg, SerialNo:code})
+    }else{
+      items.filter((item)=>{
+        if (item.Barcode === JSON.parse(code)){
+          getProductDetails(item)
+         
+        }
+      return false})
     }
-  return false})
+  
     // setNewWarrantyReg({...newWarrantyReg,ModelNo:item[0]?.ModelNo})
-    
-  }
+    }
+
   const getProductDetails= (item)=>{
     dataLookUp.filter((data)=>{
       if(item.ModelNo === data.ModelNo){
@@ -62,9 +69,11 @@ const handleReset = () => {
     })
   }
   const handleBarCodeScanned = (data) => {
+    console.log(data)
+    console.log(isModelScanner)
     alert('Scanning successful, stop scanning')
     if(data.indexOf(";") === -1){
-      getBarcode(JSON.parse(data));
+      getBarcode(data);
       
     }else{
       const data1= data.split(";")
