@@ -133,9 +133,9 @@ const handleReset = () => {
     }
   }
   return (
-    <div >
-      <Container maxWidth="sm">
-        <h1> Welcome to the scanner app</h1>
+    
+      <Container maxWidth="sm" style={styles.container}>
+        <h2 style={styles.inputs}> E-Warranty Registration</h2>
         {isBarCodeVisible? 
         <div style={{marginLeft:'10px', width:'300px',marginBottom:"10px"}}>
         <Scanner parentCallback={handleBarCodeScanned} id='scanner'/>
@@ -172,11 +172,12 @@ const handleReset = () => {
          <Button style={styles.buttoninputs} variant="contained" onClick={()=>{ setIsBarCodeVisible(!isBarCodeVisible); setisModelScanner(!isModelScanner)}}>{isBarCodeVisible & !isModelScanner? 'Close Scanner': 'Scan Serial Number'}</Button> <br/>
         <TextField style={styles.inputs} id="filled-basic" label="Product Name" variant="outlined" value={newWarrantyReg.ProductName} /><br/>
         <div style={styles.inputs}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <LocalizationProvider dateAdapter={AdapterDayjs} style={styles.inputs}>
             <MobileDatePicker
               label="Date of Purchase"
               inputFormat="MM/DD/YYYY"
               value={newWarrantyReg.DateOfPurchase}
+              style={styles.inputs}
               onChange={(date)=>setNewWarrantyReg({...newWarrantyReg,DateOfPurchase:date})}
               renderInput={(params) => <TextField {...params} />}
             />
@@ -194,7 +195,7 @@ const handleReset = () => {
           message="warranty created successfully"
         />
       </Container>
-    </div>
+    
   );
 }
 
@@ -202,18 +203,14 @@ export default App;
 const styles = {
   inputs:{
     margin:'10px',
-   
+    width: '100%'
   },
   buttoninputs:{
     margin:'10px',
     backgroundColor: '#006289',
     color: '#fff'
   },
-  selections:{
-    border:'none',
-    height:'40px',
-    margin:'10px',
-    width: '220px'
-    
+  container:{
+    margin:'5px'
   }
 }
