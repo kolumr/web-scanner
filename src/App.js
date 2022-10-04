@@ -127,6 +127,7 @@ const handleReset = () => {
         setIsLoading(false);
         setOpen(true);
         setTimeout(()=>{setOpen(false)}, 3000)
+        handleReset()
       } 
       
     } catch (error) {
