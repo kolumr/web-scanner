@@ -135,7 +135,7 @@ const handleReset = () => {
   return (
     
       <Container maxWidth="sm" style={styles.container}>
-        <h2 style={styles.inputs}> E-Warranty Registration</h2>
+        <h2 style={styles.text}> E-Warranty Registration</h2>
         {isBarCodeVisible? 
         <div style={{marginLeft:'10px', width:'300px',marginBottom:"10px"}}>
         <Scanner parentCallback={handleBarCodeScanned} id='scanner'/>
@@ -152,7 +152,7 @@ const handleReset = () => {
           {purchaseWays.map((s, i) => <MenuItem key={i} value={s} >{s}</MenuItem>)}
         </Select>
       </FormControl>
-        <br/>
+        
         <FormControl sx={{ m: 1, minWidth: 225 }} style={styles.inputs}>
         <InputLabel id="demo-simple-select-helper-label">Purchase Town</InputLabel>
         <Select
@@ -165,30 +165,27 @@ const handleReset = () => {
          {towns.map((s, i) => <MenuItem key={i} value={s} >{s}</MenuItem>)}
         </Select>
       </FormControl>
-       <br/>
-        <TextField style={styles.inputs} id="filled-basic" label="Model Number" variant="outlined" value={newWarrantyReg.ModelNo}/> <br/>
-        <Button style={styles.buttoninputs} variant="contained" onClick={()=> setIsBarCodeVisible(!isBarCodeVisible)}>{isBarCodeVisible & isModelScanner? 'Close Scanner': 'Scan Model Number'}</Button> <br/>
-        <TextField style={styles.inputs} id="filled-basic" label="Serial Number" variant="outlined" value={newWarrantyReg.SerialNo} /><br/>
-         <Button style={styles.buttoninputs} variant="contained" onClick={()=>{ setIsBarCodeVisible(!isBarCodeVisible); setisModelScanner(!isModelScanner)}}>{isBarCodeVisible & !isModelScanner? 'Close Scanner': 'Scan Serial Number'}</Button> <br/>
-        <TextField style={styles.inputs} id="filled-basic" label="Product Name" variant="outlined" value={newWarrantyReg.ProductName} /><br/>
-        <div style={styles.inputs}>
-          <LocalizationProvider dateAdapter={AdapterDayjs} style={styles.inputs}>
+       
+        <TextField style={styles.inputs} id="filled-basic" label="Model Number" variant="outlined" value={newWarrantyReg.ModelNo}/> 
+        <Button style={styles.buttoninputs} variant="contained" onClick={()=> setIsBarCodeVisible(!isBarCodeVisible)}>{isBarCodeVisible & isModelScanner? 'Close Scanner': 'Scan Model Number'}</Button> 
+        <TextField style={styles.inputs} id="filled-basic" label="Serial Number" variant="outlined" value={newWarrantyReg.SerialNo} />
+         <Button style={styles.buttoninputs} variant="contained" onClick={()=>{ setIsBarCodeVisible(!isBarCodeVisible); setisModelScanner(!isModelScanner)}}>{isBarCodeVisible & !isModelScanner? 'Close Scanner': 'Scan Serial Number'}</Button> 
+        <TextField style={styles.inputs} id="filled-basic" label="Product Name" variant="outlined" value={newWarrantyReg.ProductName} />
+          <LocalizationProvider dateAdapter={AdapterDayjs} >
             <MobileDatePicker
               label="Date of Purchase"
               inputFormat="MM/DD/YYYY"
               value={newWarrantyReg.DateOfPurchase}
-              style={styles.inputs}
               onChange={(date)=>setNewWarrantyReg({...newWarrantyReg,DateOfPurchase:date})}
-              renderInput={(params) => <TextField {...params} />}
+              renderInput={(params) => <TextField style={styles.inputs} {...params} />}
             />
           </LocalizationProvider> 
-        </div>
-        {newWarrantyReg.WarrantyPeriod? <TextField disabled='true' style={styles.inputs} id="filled-basic" label="Warranty Period" variant="outlined" value={newWarrantyReg.WarrantyPeriod} />: <div></div>}
-        <br/>
-        <LoadingButton loading={isLoading} style={styles.buttoninputs} variant="contained" onClick={()=> handleWarrantyReg()}>Register Warranty</LoadingButton> <Button style={styles.buttoninputs} onClick={handleReset}>Reset</Button><br/>
-        <div style={styles.inputs}>
-          <a  href="https://mikaappliances.com/warranty-terms-conditions/"> Terms & Conditions</a>
-        </div>
+        {newWarrantyReg.WarrantyPeriod? <><TextField disabled='true' style={styles.inputs} id="filled-basic" label="Warranty Period" variant="outlined" value={newWarrantyReg.WarrantyPeriod} /> </>: <div></div>}
+       
+        <LoadingButton loading={isLoading} style={styles.buttoninputs} variant="contained" onClick={()=> handleWarrantyReg()}>Register Warranty</LoadingButton> <Button style={styles.buttoninputs} onClick={handleReset}>Reset</Button>
+        
+        <a style={styles.text} href="https://mikaappliances.com/warranty-terms-conditions/"> Terms & Conditions</a>
+     
         <Snackbar
           open={open}
           autoHideDuration={6000}
@@ -203,14 +200,28 @@ export default App;
 const styles = {
   inputs:{
     margin:'10px',
-    width: '100%'
+    width: '100%',
+    
+    
   },
   buttoninputs:{
     margin:'10px',
     backgroundColor: '#006289',
-    color: '#fff'
+    color: '#fff',
+    width: '100%'
   },
   container:{
-    margin:'5px'
+    // margin:'5px',,
+    width:'100%',
+    display: 'flex',
+    alignItems: 'center',
+    alignText: 'center',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    marginBottom: '20px'
+  },
+  text:{
+    display: 'flex',
+    alignItems: 'center',
   }
 }
