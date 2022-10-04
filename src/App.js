@@ -3,6 +3,11 @@ import {Container,TextField,Snackbar, Button} from '@mui/material';
 import { items } from "./csvjson";
 import {formatDate} from './helpers/format'
 import { LoadingButton } from '@mui/lab';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import FormHelperText from '@mui/material/FormHelperText';
 import { towns } from "./towns";
 import Scanner from "./Scanner";
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
@@ -27,6 +32,14 @@ function App() {
     WarrantyPeriod:"",
     ProductName:""
   })
+  const handleChange = (event) => {
+    console.log(event.target.value)
+    setNewWarrantyReg({...newWarrantyReg, PurchasedFrom: event.target.value});
+    console.log(newWarrantyReg)
+  };
+  const handleTownChange = (event) => {
+    setNewWarrantyReg({...newWarrantyReg, PurchaseTown: event.target.value});
+  };
   const purchaseWays = ['Mika Website', 'Mika Showroom', 'Supermarket','Shop','Other']
 const handleReset = () => {
   setNewWarrantyReg({
@@ -128,20 +141,37 @@ const handleReset = () => {
         <div style={{marginLeft:'10px', width:'300px',marginBottom:"10px"}}>
         <Scanner parentCallback={handleBarCodeScanned} id='scanner'/>
         </div> : <div></div> }
-        <select style={styles.selections} onSelect={(e)=>setNewWarrantyReg({...newWarrantyReg,PurchasedFrom:e.target.value})}>
-        <option value="">-- Purchased from -- </option>
-                    {purchaseWays.map((s, i) => <option key={i} value={s} >{s}</option>)}
-        </select><br/>
-        <select style={styles.selections} onSelect={(e)=>setNewWarrantyReg({...newWarrantyReg,PurchaseTown:e.target.value})}>
-        <option value="">-- Select Town of purchase -- </option>
-                    {towns.map((s, i) => <option key={i} value={s}>{s}</option>)}
-        </select><br/>
-        
+        <FormControl sx={{ m: 1, minWidth: 225 }} style={styles.inputs}>
+        <InputLabel id="demo-simple-select-helper-label">Purchased from</InputLabel>
+        <Select
+          labelId="demo-simple-select-helper-label"
+          id="demo-simple-select-helper"
+          value={newWarrantyReg.PurchasedFrom}
+          label="Purchased from"
+          onChange={handleChange}
+        >
+          {purchaseWays.map((s, i) => <MenuItem key={i} value={s} >{s}</MenuItem>)}
+        </Select>
+      </FormControl>
+        <br/>
+        <FormControl sx={{ m: 1, minWidth: 225 }} style={styles.inputs}>
+        <InputLabel id="demo-simple-select-helper-label">Purchase Town</InputLabel>
+        <Select
+          labelId="demo-simple-select-helper-label"
+          id="demo-simple-select-helper"
+          value={newWarrantyReg.PurchaseTown}
+          label="Purchase Town"
+          onChange={handleTownChange}
+        >
+         {towns.map((s, i) => <MenuItem key={i} value={s} >{s}</MenuItem>)}
+        </Select>
+      </FormControl>
+       <br/>
         <TextField style={styles.inputs} id="filled-basic" label="Model Number" variant="outlined" value={newWarrantyReg.ModelNo}/> <br/>
-        <Button style={styles.inputs} variant="contained" onClick={()=> setIsBarCodeVisible(!isBarCodeVisible)}>{isBarCodeVisible & isModelScanner? 'Close Scanner': 'Scan Model Number'}</Button> <br/>
+        <Button style={styles.buttoninputs} variant="contained" onClick={()=> setIsBarCodeVisible(!isBarCodeVisible)}>{isBarCodeVisible & isModelScanner? 'Close Scanner': 'Scan Model Number'}</Button> <br/>
         <TextField style={styles.inputs} id="filled-basic" label="Serial Number" variant="outlined" value={newWarrantyReg.SerialNo} /><br/>
-         <Button style={styles.inputs} variant="contained" onClick={()=>{ setIsBarCodeVisible(!isBarCodeVisible); setisModelScanner(!isModelScanner)}}>{isBarCodeVisible & !isModelScanner? 'Close Scanner': 'Scan Serial Number'}</Button> <br/>
-        <TextField style={styles.inputs} id="filled-basic" label="ProductName" variant="outlined" value={newWarrantyReg.ProductName} /><br/>
+         <Button style={styles.buttoninputs} variant="contained" onClick={()=>{ setIsBarCodeVisible(!isBarCodeVisible); setisModelScanner(!isModelScanner)}}>{isBarCodeVisible & !isModelScanner? 'Close Scanner': 'Scan Serial Number'}</Button> <br/>
+        <TextField style={styles.inputs} id="filled-basic" label="Product Name" variant="outlined" value={newWarrantyReg.ProductName} /><br/>
         <div style={styles.inputs}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <MobileDatePicker
@@ -155,7 +185,7 @@ const handleReset = () => {
         </div>
         {newWarrantyReg.WarrantyPeriod? <TextField disabled='true' style={styles.inputs} id="filled-basic" label="Warranty Period" variant="outlined" value={newWarrantyReg.WarrantyPeriod} />: <div></div>}
         <br/>
-        <LoadingButton loading={isLoading} style={styles.inputs} variant="contained" onClick={()=> handleWarrantyReg()}>Register Warranty</LoadingButton> <Button variant="outlined" onClick={handleReset}>Reset</Button><br/>
+        <LoadingButton loading={isLoading} style={styles.buttoninputs} variant="contained" onClick={()=> handleWarrantyReg()}>Register Warranty</LoadingButton> <Button style={styles.buttoninputs} onClick={handleReset}>Reset</Button><br/>
         <div style={styles.inputs}>
           <a  href="https://mikaappliances.com/warranty-terms-conditions/"> Terms & Conditions</a>
         </div>
@@ -172,7 +202,13 @@ const handleReset = () => {
 export default App;
 const styles = {
   inputs:{
-    margin:'10px'
+    margin:'10px',
+   
+  },
+  buttoninputs:{
+    margin:'10px',
+    backgroundColor: '#006289',
+    color: '#fff'
   },
   selections:{
     border:'none',
