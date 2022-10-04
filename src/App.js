@@ -13,7 +13,7 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { dataLookUp } from "./data";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-
+import logo from './MIKA-LOGO.png'
 function App() {
   const [open, setOpen] =useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -67,8 +67,6 @@ const handleReset = () => {
         }
       return false})
     }
-  
-    // setNewWarrantyReg({...newWarrantyReg,ModelNo:item[0]?.ModelNo})
     }
 
   const getProductDetails= (item)=>{
@@ -83,7 +81,7 @@ const handleReset = () => {
   const handleBarCodeScanned = (data) => {
     console.log(data)
     console.log(isModelScanner)
-    alert('Scanning successful, stop scanning')
+    alert('Scanning successful')
     if(data.indexOf(";") === -1){
       getBarcode(data);
       
@@ -104,6 +102,12 @@ const handleReset = () => {
       }
   };
   const handleWarrantyReg = async () =>{
+    if(newWarrantyReg.PurchasedFrom === '') return alert('Puchased from field is empty')
+    if(newWarrantyReg.PurchaseTown === '') return alert('Puchase town field is empty')
+    if(newWarrantyReg.ModelNo === '') return alert('Model Number field is empty')
+    if(newWarrantyReg.SerialNo === '') return alert('Serial number field is empty')
+    if(newWarrantyReg.DateOfPurchase === '') return alert('Date of purchase field is empty')
+    
     setIsLoading(true)
     // let token = await sessionStorage.getItem('authToken')
     let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvbWlrYWFwcGxpYW5jZXMuY29tIiwiaWF0IjoxNjYwNzQ0NjczLCJuYmYiOjE2NjA3NDQ2NzMsImV4cCI6MTY2MTM0OTQ3MywiZGF0YSI6eyJ1c2VyIjp7ImlkIjoyLCJkZXZpY2UiOiIiLCJwYXNzIjoiMTQwYjY4OWJlMmIxMmQ3Mjc4MTgyNzNkMGNmNGI5MzgifX19.QJAzbUeBYBXueK9cYNgE_IjcelMaowO9YMw1SS6Vpk8"
@@ -135,6 +139,7 @@ const handleReset = () => {
   return (
     
       <Container maxWidth="sm" style={styles.container}>
+        <img style={styles.logoImage} src={logo} alt='logo'/>
         <h2 style={styles.text}> E-Warranty Registration</h2>
         {isBarCodeVisible? 
         <div style={{marginLeft:'10px', width:'300px',marginBottom:"10px"}}>
@@ -211,7 +216,7 @@ const styles = {
     width: '100%'
   },
   container:{
-    // margin:'5px',,
+    marginTop:'10px',
     width:'100%',
     display: 'flex',
     alignItems: 'center',
@@ -223,5 +228,9 @@ const styles = {
   text:{
     display: 'flex',
     alignItems: 'center',
+  },
+  logoImage:{
+    height: '100px',
+    width: '60%',
   }
 }
