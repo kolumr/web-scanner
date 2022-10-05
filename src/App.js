@@ -203,9 +203,9 @@ const handleReset = () => {
         )}
       />       
         <TextField style={styles.inputs} id="filled-basic" label="Model Number" variant="outlined" value={newWarrantyReg.ModelNo}/> 
-        <Button style={styles.buttoninputs} variant="contained" onClick={()=> setIsBarCodeVisible(!isBarCodeVisible)}>{isBarCodeVisible & isModelScanner? 'Close Scanner': 'Scan Model Number'}</Button> 
+        {/* <Button style={styles.buttoninputs} variant="contained" onClick={()=> setIsBarCodeVisible(!isBarCodeVisible)}>{isBarCodeVisible & isModelScanner? 'Close Scanner': 'Scan Model Number'}</Button>  */}
         <TextField style={styles.inputs} id="filled-basic" label="Serial Number" variant="outlined" value={newWarrantyReg.SerialNo} />
-         <Button style={styles.buttoninputs} variant="contained" onClick={()=>{ setIsBarCodeVisible(!isBarCodeVisible); setisModelScanner(!isModelScanner)}}>{isBarCodeVisible & !isModelScanner? 'Close Scanner': 'Scan Serial Number'}</Button> 
+         {/* <Button style={styles.buttoninputs} variant="contained" onClick={()=>{ setIsBarCodeVisible(!isBarCodeVisible); setisModelScanner(!isModelScanner)}}>{isBarCodeVisible & !isModelScanner? 'Close Scanner': 'Scan Serial Number'}</Button>  */}
         <TextField style={styles.inputs} id="filled-basic" label="Product Name" variant="outlined" value={newWarrantyReg.ProductName} />
           <LocalizationProvider dateAdapter={AdapterDayjs} >
             <MobileDatePicker
