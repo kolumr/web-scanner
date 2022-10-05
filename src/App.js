@@ -1,5 +1,6 @@
 import React,{ useState} from "react";
 import {Container,TextField,Snackbar, Button} from '@mui/material';
+import {Html5Qrcode} from "html5-qrcode";
 import { items } from "./csvjson";
 import {formatDate} from './helpers/format'
 import { LoadingButton } from '@mui/lab';
@@ -18,6 +19,7 @@ import logo from './MIKA-LOGO.png'
 function App() {
   const [open, setOpen] =useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isModelScanner, setisModelScanner] = React.useState(true);
   const [isBarCodeVisible, setIsBarCodeVisible] = React.useState(false);
   const [newWarrantyReg, setNewWarrantyReg] = useState({
@@ -32,6 +34,25 @@ function App() {
     WarrantyPeriod:"",
     ProductName:""
   })
+  const html5QrCode = new Html5Qrcode("reader");
+  const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+    stopScanner()
+    handleBarCodeScanned(decodedText)
+   
+};
+  const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+  const startScanner = () => {
+    html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
+    setIsCameraOpen(true);
+  }
+  const stopScanner = () => {
+    html5QrCode.stop().then((ignore) => {
+      // QR Code scanning is stopped.
+      setIsCameraOpen(false)
+    }).catch((err) => {
+      // Stop failed, handle it.
+    });
+  }
   const handleChange = (event) => {
     console.log(event.target.value)
     setNewWarrantyReg({...newWarrantyReg, PurchasedFrom: event.target.value});
@@ -93,8 +114,6 @@ const handleReset = () => {
   }
   const handleBarCodeScanned = (data) => {
     console.log(data)
-    console.log(isModelScanner)
-    alert('Scanning successful')
     if(data.indexOf(";") === -1){
       getBarcode(data);
       
@@ -105,7 +124,6 @@ const handleReset = () => {
         SerialNo:data1[1]})
       dataLookUp.filter((data)=>{
         if(data1[0] === data.ModelNo){
-          console.log('found')
           return setNewWarrantyReg({...newWarrantyReg,ModelNo:data1[0],
             SerialNo:data1[1],ProductName:data.ItemName,WarrantyPeriod:data.WarrantyType})
         }
@@ -153,10 +171,15 @@ const handleReset = () => {
       <Container maxWidth="sm" style={styles.container}>
         <img style={styles.logoImage} src={logo} alt='logo'/>
         <h2 style={styles.text}> E-Warranty Registration</h2>
-        {isBarCodeVisible? 
+        {/* {isBarCodeVisible? 
         <div style={{marginLeft:'10px', width:'300px',marginBottom:"10px"}}>
         <Scanner parentCallback={handleBarCodeScanned} id='scanner'/>
-        </div> : <div></div> }
+        </div> : <div></div> } */}
+        <div id="reader"></div>
+        {isCameraOpen?
+        <Button style={styles.buttoninputs} onClick={()=>stopScanner()}>Stop Scanning</Button>:
+        <Button style={styles.inputs} onClick={()=>startScanner()}>Start Scanning</Button>
+      }
         <FormControl sx={{ m: 1, minWidth: 225 }} style={styles.inputs}>
         <InputLabel id="demo-simple-select-helper-label">Purchased from</InputLabel>
         <Select
