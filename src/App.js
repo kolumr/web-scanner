@@ -28,7 +28,7 @@ function App() {
     DateOfPurchase: '' ,
     DateOfRegistration: formatDate(),
     PurchaseDate:'',
-    PurchaseTown:'Nairobi',
+    PurchaseTown:'',
     PurchasedFrom:"",
     WarrantyPeriod:"",
     ProductName:""
@@ -67,7 +67,7 @@ const handleReset = () => {
     DateOfPurchase: '' ,
     DateOfRegistration: formatDate(),
     PurchaseDate:'',
-    PurchaseTown:'Nairobi',
+    PurchaseTown:'',
     PurchasedFrom:"",
     WarrantyPeriod:"",
     ProductName:""
