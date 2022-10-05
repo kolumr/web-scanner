@@ -19,6 +19,7 @@ import logo from './MIKA-LOGO.png'
 function App() {
   const [open, setOpen] =useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isModelScanner, setisModelScanner] = React.useState(true);
   const [isBarCodeVisible, setIsBarCodeVisible] = React.useState(false);
   const [newWarrantyReg, setNewWarrantyReg] = useState({
@@ -37,14 +38,17 @@ function App() {
   const qrCodeSuccessCallback = (decodedText, decodedResult) => {
     stopScanner()
     handleBarCodeScanned(decodedText)
+   
 };
   const config = { fps: 10, qrbox: { width: 250, height: 250 } };
   const startScanner = () => {
     html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
+    setIsCameraOpen(true);
   }
   const stopScanner = () => {
     html5QrCode.stop().then((ignore) => {
       // QR Code scanning is stopped.
+      setIsCameraOpen(false)
     }).catch((err) => {
       // Stop failed, handle it.
     });
@@ -67,7 +71,7 @@ const handleReset = () => {
     DateOfPurchase: '' ,
     DateOfRegistration: formatDate(),
     PurchaseDate:'',
-    PurchaseTown:'Nairobi',
+    PurchaseTown:'',
     PurchasedFrom:"",
     WarrantyPeriod:"",
     ProductName:""
@@ -109,6 +113,7 @@ const handleReset = () => {
     })
   }
   const handleBarCodeScanned = (data) => {
+    console.log(data)
     if(data.indexOf(";") === -1){
       getBarcode(data);
       
@@ -119,7 +124,6 @@ const handleReset = () => {
         SerialNo:data1[1]})
       dataLookUp.filter((data)=>{
         if(data1[0] === data.ModelNo){
-          console.log('found')
           return setNewWarrantyReg({...newWarrantyReg,ModelNo:data1[0],
             SerialNo:data1[1],ProductName:data.ItemName,WarrantyPeriod:data.WarrantyType})
         }
@@ -172,8 +176,10 @@ const handleReset = () => {
         <Scanner parentCallback={handleBarCodeScanned} id='scanner'/>
         </div> : <div></div> } */}
         <div id="reader"></div>
-        <Button style={styles.buttondiffinputs} onClick={startScanner}>Start Scanning</Button>
-        <Button style={styles.buttoninputs} onClick={stopScanner}>Stop Scanning</Button>
+        {isCameraOpen?
+        <Button style={styles.buttoninputs} onClick={()=>stopScanner()}>Stop Scanning</Button>:
+        <Button style={styles.inputs} onClick={()=>startScanner()}>Start Scanning</Button>
+      }
         <FormControl sx={{ m: 1, minWidth: 225 }} style={styles.inputs}>
         <InputLabel id="demo-simple-select-helper-label">Purchased from</InputLabel>
         <Select
@@ -219,7 +225,7 @@ const handleReset = () => {
           </LocalizationProvider> 
         {newWarrantyReg.WarrantyPeriod? <><TextField disabled='true' style={styles.inputs} id="filled-basic" label="Warranty Period" variant="outlined" value={newWarrantyReg.WarrantyPeriod} /> </>: <div></div>}
        
-        <LoadingButton loading={isLoading} style={styles.buttondiffinputs} variant="contained" onClick={()=> handleWarrantyReg()}>Register Warranty</LoadingButton> <Button style={styles.buttoninputs} onClick={handleReset}>Reset</Button>
+        <LoadingButton loading={isLoading} style={styles.buttoninputs} variant="contained" onClick={()=> handleWarrantyReg()}>Register Warranty</LoadingButton> <Button style={styles.buttoninputs} onClick={handleReset}>Reset</Button>
         
         <a style={styles.text} href="https://mikaappliances.com/warranty-terms-conditions/"> Terms & Conditions</a>
      
@@ -244,12 +250,6 @@ const styles = {
   buttoninputs:{
     margin:'10px',
     backgroundColor: '#006289',
-    color: '#fff',
-    width: '100%'
-  },
-  buttondiffinputs:{
-    margin:'10px',
-    backgroundColor: 'green',
     color: '#fff',
     width: '100%'
   },
