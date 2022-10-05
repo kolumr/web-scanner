@@ -7,6 +7,7 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import Autocomplete from '@mui/material/Autocomplete';
 import { towns } from "./towns";
 import Scanner from "./Scanner";
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
@@ -26,7 +27,7 @@ function App() {
     DateOfPurchase: '' ,
     DateOfRegistration: formatDate(),
     PurchaseDate:'',
-    PurchaseTown:'',
+    PurchaseTown:'Nairobi',
     PurchasedFrom:"",
     WarrantyPeriod:"",
     ProductName:""
@@ -36,8 +37,9 @@ function App() {
     setNewWarrantyReg({...newWarrantyReg, PurchasedFrom: event.target.value});
     console.log(newWarrantyReg)
   };
-  const handleTownChange = (event) => {
-    setNewWarrantyReg({...newWarrantyReg, PurchaseTown: event.target.value});
+  const handleTownChange = (event,value) => {
+    console.log(value)
+    setNewWarrantyReg({...newWarrantyReg, PurchaseTown: value});
   };
   const purchaseWays = ['Mika Website', 'Mika Showroom', 'Supermarket','Shop','Other']
 const handleReset = () => {
@@ -55,17 +57,28 @@ const handleReset = () => {
   })
 }
   const getBarcode = async (code) =>{
-    console.log("getBarcode")
-    if(isModelScanner === false){
-      console.log("Serial")
-      setNewWarrantyReg({...newWarrantyReg, SerialNo:code})
-    }else{
-      items.filter((item)=>{
+    console.log(code)
+    // if(isModelScanner === false){
+    //   console.log("Serial")
+    //   setNewWarrantyReg({...newWarrantyReg, SerialNo:code})
+    // }else{
+    //   items.filter((item)=>{
+    //     if (item.Barcode === JSON.parse(code)){
+    //       getProductDetails(item)
+         
+    //     }
+    //   return false})
+    // }
+    console.log(code.charAt(0))
+    if(code.charAt(0)==='6'){
+         items.filter((item)=>{
         if (item.Barcode === JSON.parse(code)){
           getProductDetails(item)
          
         }
-      return false})
+      })
+    }else {
+      setNewWarrantyReg({...newWarrantyReg, SerialNo:code})
     }
     }
 
@@ -96,9 +109,7 @@ const handleReset = () => {
           return setNewWarrantyReg({...newWarrantyReg,ModelNo:data1[0],
             SerialNo:data1[1],ProductName:data.ItemName,WarrantyPeriod:data.WarrantyType})
         }
-      })
-      
-      
+      });
       }
   };
   const handleWarrantyReg = async () =>{
@@ -158,20 +169,22 @@ const handleReset = () => {
           {purchaseWays.map((s, i) => <MenuItem key={i} value={s} >{s}</MenuItem>)}
         </Select>
       </FormControl>
-        
-        <FormControl sx={{ m: 1, minWidth: 225 }} style={styles.inputs}>
-        <InputLabel id="demo-simple-select-helper-label">Purchase Town</InputLabel>
-        <Select
-          labelId="demo-simple-select-helper-label"
-          id="demo-simple-select-helper"
-          value={newWarrantyReg.PurchaseTown}
-          label="Purchase Town"
-          onChange={handleTownChange}
-        >
-         {towns.map((s, i) => <MenuItem key={i} value={s} >{s}</MenuItem>)}
-        </Select>
-      </FormControl>
-       
+      <Autocomplete
+        style={styles.inputs}
+        options={towns}
+        id="select-purchase-town"
+        onChange={handleTownChange}
+        value={newWarrantyReg.PurchaseTown}
+        getOptionLabel = {(option) => {
+          // Value selected with enter, right from the input
+          if (typeof option === 'string') {
+            return option;
+          }
+          }}
+          renderInput={(params) => (
+          <TextField {...params} label="Purchase Town" />
+        )}
+      />       
         <TextField style={styles.inputs} id="filled-basic" label="Model Number" variant="outlined" value={newWarrantyReg.ModelNo}/> 
         <Button style={styles.buttoninputs} variant="contained" onClick={()=> setIsBarCodeVisible(!isBarCodeVisible)}>{isBarCodeVisible & isModelScanner? 'Close Scanner': 'Scan Model Number'}</Button> 
         <TextField style={styles.inputs} id="filled-basic" label="Serial Number" variant="outlined" value={newWarrantyReg.SerialNo} />
@@ -180,7 +193,8 @@ const handleReset = () => {
           <LocalizationProvider dateAdapter={AdapterDayjs} >
             <MobileDatePicker
               label="Date of Purchase"
-              inputFormat="MM/DD/YYYY"
+              inputFormat="DD/MM/YYYY"
+              maxDate={new Date()}
               value={newWarrantyReg.DateOfPurchase}
               onChange={(date)=>setNewWarrantyReg({...newWarrantyReg,DateOfPurchase:date})}
               renderInput={(params) => <TextField style={styles.inputs} {...params} />}
