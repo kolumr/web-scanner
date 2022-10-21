@@ -15,7 +15,7 @@ class Scanner extends React.Component {
             <h2>Scan Barcode or QR code</h2>
             <Html5QrcodePlugin 
                 fps={10}
-                qrbox={250}
+                // qrbox={ width: 875, height: 1000 }
                 disableFlip={false}
                 qrCodeSuccessCallback={this.onNewScanResult}/>
         </div>);

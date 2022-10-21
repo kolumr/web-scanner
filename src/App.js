@@ -10,7 +10,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Autocomplete from '@mui/material/Autocomplete';
 import { towns } from "./towns";
-import Scanner from "./Scanner";
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { dataLookUp } from "./data";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -38,8 +37,27 @@ function App() {
     stopScanner()
     handleBarCodeScanned(decodedText)
 };
-  const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+var qrboxFunction = function(viewfinderWidth, viewfinderHeight) {
+  // Square QR Box, with size = 80% of the min edge.
+  var minEdgeSizeThreshold = 250;
+  var edgeSizePercentage = 0.8;
+
+  var minEdgeSize = (viewfinderWidth > viewfinderHeight) ?
+      viewfinderHeight : viewfinderWidth;
+  var qrboxEdgeSize = Math.floor(minEdgeSize * edgeSizePercentage);
+  if (qrboxEdgeSize < minEdgeSizeThreshold) {
+      if (minEdgeSize < minEdgeSizeThreshold) {
+          return {width: minEdgeSize, height: minEdgeSize};
+      } else {
+          return {
+              width: minEdgeSizeThreshold,
+              height: minEdgeSizeThreshold
+          };
+      }
+  }}
   const startScanner = () => {
+    const config = { fps: 10,qrbox: qrboxFunction ,rememberLastUsedCamera: true,
+  };
     html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
   }
   const stopScanner = () => {
@@ -171,7 +189,7 @@ const handleReset = () => {
         <div style={{marginLeft:'10px', width:'300px',marginBottom:"10px"}}>
         <Scanner parentCallback={handleBarCodeScanned} id='scanner'/>
         </div> : <div></div> } */}
-        <div id="reader"></div>
+        <div id="reader" width="100%" height='100%'></div>
         <Button style={styles.buttondiffinputs} onClick={startScanner}>Start Scanning</Button>
         <Button style={styles.buttoninputs} onClick={stopScanner}>Stop Scanning</Button>
         <FormControl sx={{ m: 1, minWidth: 225 }} style={styles.inputs}>
