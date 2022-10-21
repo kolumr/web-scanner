@@ -2,6 +2,7 @@ import React,{ useState} from "react";
 import {Container,TextField,Snackbar, Button} from '@mui/material';
 import {Html5Qrcode} from "html5-qrcode";
 import { items } from "./csvjson";
+import Scanner from './Scanner'
 import {formatDate} from './helpers/format'
 import { LoadingButton } from '@mui/lab';
 import FormControl from '@mui/material/FormControl';
@@ -19,7 +20,7 @@ function App() {
   const [open, setOpen] =useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isModelScanner, setisModelScanner] = React.useState(true);
-  const [isBarCodeVisible, setIsBarCodeVisible] = React.useState(false);
+  const [isBarCodeVisible, setIsBarCodeVisible] = React.useState(true);
   const [newWarrantyReg, setNewWarrantyReg] = useState({
     UserId:20,
     ModelNo: "",
@@ -185,13 +186,13 @@ const handleReset = () => {
       <Container maxWidth="sm" style={styles.container}>
         <img style={styles.logoImage} src={logo} alt='logo'/>
         <h2 style={styles.text}> E-Warranty Registration</h2>
-        {/* {isBarCodeVisible? 
-        <div style={{marginLeft:'10px', width:'300px',marginBottom:"10px"}}>
+        {isBarCodeVisible? 
+        <div style={{marginLeft:'10px', width:'100%', height:'100%',marginBottom:"10px"}}>
         <Scanner parentCallback={handleBarCodeScanned} id='scanner'/>
-        </div> : <div></div> } */}
+        </div> : <div></div> }
         <div id="reader" width="100%" height='100%'></div>
-        <Button style={styles.buttondiffinputs} onClick={startScanner}>Start Scanning</Button>
-        <Button style={styles.buttoninputs} onClick={stopScanner}>Stop Scanning</Button>
+        {/* <Button style={styles.buttondiffinputs} onClick={startScanner}>Start Scanning</Button>
+        <Button style={styles.buttoninputs} onClick={stopScanner}>Stop Scanning</Button> */}
         <FormControl sx={{ m: 1, minWidth: 225 }} style={styles.inputs}>
         <InputLabel id="demo-simple-select-helper-label">Purchased from</InputLabel>
         <Select
