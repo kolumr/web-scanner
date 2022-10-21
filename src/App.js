@@ -185,14 +185,13 @@ const handleReset = () => {
       <Container maxWidth="sm" style={styles.container}>
         <img style={styles.logoImage} src={logo} alt='logo'/>
         <h2 style={styles.text}> E-Warranty Registration</h2>
-        {isBarCodeVisible? 
-        <div>
+        {/* {isBarCodeVisible? 
+        <div style={{marginLeft:'10px', width:'300px',marginBottom:"10px"}}>
+        <Scanner parentCallback={handleBarCodeScanned} id='scanner'/>
+        </div> : <div></div> } */}
         <div id="reader" width="100%" ></div>
         <Button style={styles.buttondiffinputs} onClick={startScanner}>Start Scanning</Button>
         <Button style={styles.buttoninputs} onClick={stopScanner}>Stop Scanning</Button>
-        <Button style={styles.buttoninputs} onClick={()=>setIsBarCodeVisible(false)}>Close Scanner</Button>
-        </div> : <div>
-        <Button style={styles.buttondiffinputs} onClick={()=>setIsBarCodeVisible(true)}>Open Scanner</Button>
         <FormControl sx={{ m: 1, minWidth: 225 }} style={styles.inputs}>
         <InputLabel id="demo-simple-select-helper-label">Purchased from</InputLabel>
         <Select
@@ -247,9 +246,6 @@ const handleReset = () => {
           autoHideDuration={6000}
           message="warranty created successfully"
         />
-        </div> }
-        
-        
       </Container>
     
   );
