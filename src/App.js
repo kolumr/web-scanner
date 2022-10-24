@@ -112,7 +112,8 @@ const handleReset = () => {
          
         }
       })
-    }else {
+    }
+    else {
       setNewWarrantyReg({...newWarrantyReg, SerialNo:code})
     }
     }
@@ -127,7 +128,15 @@ const handleReset = () => {
     })
   }
   const handleBarCodeScanned = (data) => {
-    if(data.indexOf(";") === -1){
+     if(data.includes('https')){
+      dataLookUp.filter((datas)=>{
+        if (datas.Link === data){
+          setNewWarrantyReg({...newWarrantyReg,ProductName:datas.ItemName,WarrantyPeriod:datas.WarrantyType,ModelNo:datas.ModelNo})
+         
+        }
+      })
+    }
+    else if(data.indexOf(";") === -1){
       getBarcode(data);
       
     }else{
@@ -189,7 +198,7 @@ const handleReset = () => {
         <div style={{marginLeft:'10px', width:'300px',marginBottom:"10px"}}>
         <Scanner parentCallback={handleBarCodeScanned} id='scanner'/>
         </div> : <div></div> } */}
-        <div id="reader" width="100%" ></div>
+        <div id="reader" ></div>
         <Button style={styles.buttondiffinputs} onClick={startScanner}>Start Scanning</Button>
         <Button style={styles.buttoninputs} onClick={stopScanner}>Stop Scanning</Button>
         <FormControl sx={{ m: 1, minWidth: 225 }} style={styles.inputs}>
@@ -287,6 +296,6 @@ const styles = {
   },
   logoImage:{
     height: '100px',
-    width: '60%',
+    width: '200px',
   }
 }

@@ -30,6 +30,7 @@ export const dataLookUp = [
       "WarrantyType": "1 Year"
     },
     {
+      "Link" : "https://mikaappliances.com/?post_type=product&#038;p=76641",
       "ItemName": "Air Conditioner, 9000 BTU",
       "ModelNo": "AS09CR4FVCUH",
       "WarrantyType": ""
